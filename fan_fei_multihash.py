@@ -1,5 +1,4 @@
 import sys
-#from functools import reduce
 import itertools
 import json
 
@@ -18,11 +17,11 @@ def hash_func_2(x):
 def elem_std(elem):
     return elem.strip()
 
-def is_validate(elem, res, num):
+def is_validate(elem, freq_set, num):
     if num == 1:
         return True
     for sub_elem in itertools.combinations(elem, num - 1):
-        if sub_elem not in res[num - 1]:
+        if sub_elem not in freq_set:
             return False
     return True
 
@@ -39,22 +38,19 @@ def output(dict_1, dict_2, freq_set):
         file.write("\n\n")
         #print(sorted(list(freq_set)))
 
-
-
 def _main():
     # filename = sys.argv[2];
     # support = sys.argv[3];
     # bucket_size = sys.argv[4];
 
     filename = "input.txt"
-    support = 4
+    support = 2
     bucket_size = 5
 
     with open(filename, 'r') as input:
         lines = input.readlines()
 
-    res = [[]]
-
+    former_freq = set()
     num = 1
     while True:
         dict_1 = {}
@@ -64,10 +60,10 @@ def _main():
         init_dict(dict_2, bucket_size)
 
         for line in lines:
-            elems = map(elem_std, line.split(","))
+            elems = sorted(map(elem_std, line.split(",")))
             for elem in itertools.combinations(elems, num):
                 print(elem)
-                if not is_validate(elem, res, num):
+                if not is_validate(elem, former_freq, num):
                     continue
                 key_1 = sum(map(hash_func_1, elem)) % bucket_size
                 dict_1[key_1] += 1
@@ -76,29 +72,40 @@ def _main():
                 print(dict_1)
                 print(dict_2)
 
-        freq_set = set()
+        freq_map = {}
 
         for line in lines:
-            elems = map(elem_std, line.split(","))
+            elems = sorted(map(elem_std, line.split(",")))
             for elem in itertools.combinations(elems, num):
                 print(elem)
-                if not is_validate(elem, res, num):
+                if not is_validate(elem, former_freq, num):
                     continue
                 if dict_1[sum(map(hash_func_1, elem)) % bucket_size] < support or dict_2[sum(map(hash_func_2, elem)) % bucket_size] < support:
                     continue
-                freq_set.add(elem)
+                if elem in freq_map:
+                    freq_map[elem] += 1
+                else:
+                    freq_map[elem] = 1
 
-        if len(freq_set) == 0:
+
+        former_freq = set()
+        for key, value in freq_map.items():
+            print(key)
+            print(value)
+            if value >= support:
+                former_freq.add(key)
+
+        if len(former_freq) == 0:
             break
 
-        res.append(freq_set)
-        output(dict_1, dict_2, freq_set)
+        output(dict_1, dict_2, former_freq)
 
         num += 1
 
         print("###############")
         print("###############")
         print("###############")
+
 
 
 _main()
