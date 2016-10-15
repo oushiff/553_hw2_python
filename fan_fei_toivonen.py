@@ -93,12 +93,11 @@ def find_freq_candidate(sampled_std_lines, num, former_freq, bucket_size, new_su
     return freq_candidate
 
 def _main():
-    # filename = sys.argv[2];
-    # support = sys.argv[3];
-    # bucket_size = sys.argv[4];
+    filename = sys.argv[1]
+    support = int(sys.argv[2])
 
-    filename = "input.txt"
-    support = 10
+    # filename = "input.txt"
+    # support = 10
 
     fraction = 0.5
     lower_rate = 0.35

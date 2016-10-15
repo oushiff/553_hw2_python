@@ -38,13 +38,13 @@ def output(dict_1, dict_2, freq_set):
         file.write("\n\n")
 
 def _main():
-    # filename = sys.argv[2];
-    # support = sys.argv[3];
-    # bucket_size = sys.argv[4];
+    filename = sys.argv[1]
+    support = int(sys.argv[2])
+    bucket_size = int(sys.argv[3])
 
-    filename = "input.txt"
-    support = 10
-    bucket_size = 30
+    # filename = "input.txt"
+    # support = 10
+    # bucket_size = 30
 
     with open(filename, 'r') as input:
         lines = input.readlines()
