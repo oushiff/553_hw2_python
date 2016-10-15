@@ -18,7 +18,7 @@ def hash_func_2(x):
     return ord(x.strip()) * 9
 
 
-def is_validate(elem, freq_set, num):
+def former_freq_check(elem, freq_set, num):
     if num == 1:
         return True
     for sub_elem in itertools.combinations(elem, num - 1):
@@ -54,8 +54,43 @@ def output(time, fraction, res):
         for freq_set in res:
             file.write(freq_set_to_str(freq_set))
             file.write("\n\n")
-        #print(sorted(list(freq_set)))
 
+def find_freq_candidate(sampled_std_lines, num, former_freq, bucket_size, new_support):
+    dict_1 = {}
+    dict_2 = {}
+
+    init_dict(dict_1, bucket_size)
+    init_dict(dict_2, bucket_size)
+
+    for line in sampled_std_lines:
+        for elem in itertools.combinations(line, num):
+            if not former_freq_check(elem, former_freq, num):
+                continue
+            key_1 = sum(map(hash_func_1, elem)) % bucket_size
+            dict_1[key_1] += 1
+            key_2 = sum(map(hash_func_2, elem)) % bucket_size
+            dict_2[key_2] += 1
+
+    freq_map = {}
+
+    for line in sampled_std_lines:
+        for elem in itertools.combinations(line, num):
+            if not former_freq_check(elem, former_freq, num):
+                continue
+            if dict_1[sum(map(hash_func_1, elem)) % bucket_size] < new_support or dict_2[
+                        sum(map(hash_func_2, elem)) % bucket_size] < new_support:
+                continue
+            if elem in freq_map:
+                freq_map[elem] += 1
+            else:
+                freq_map[elem] = 1
+
+    freq_candidate = {}
+    for key, value in freq_map.items():
+        if value >= new_support:
+            freq_candidate[key] = 0
+
+    return freq_candidate
 
 def _main():
     # filename = sys.argv[2];
@@ -63,11 +98,11 @@ def _main():
     # bucket_size = sys.argv[4];
 
     filename = "input.txt"
-    support = 4
+    support = 10
 
     fraction = 0.5
     lower_rate = 0.35
-    max_try = 100
+    max_try = 50000
     does_finished = False
 
     with open(filename, 'r') as input:
@@ -82,70 +117,37 @@ def _main():
         sampled_std_lines = sample_lines(std_lines, fraction)
         bucket_size = len(sampled_std_lines) * 5
 
-        print(sampled_std_lines)
-
-        former_freq = {}
+        former_freq = set()
         res = []
         is_fail = False
 
         num = 1
         while True:
-            dict_1 = {}
-            dict_2 = {}
 
-            init_dict(dict_1, bucket_size)
-            init_dict(dict_2, bucket_size)
+            freq_candidate = find_freq_candidate(sampled_std_lines, num, former_freq, bucket_size, support * lower_rate)
 
             negative_border = {}
 
-            for line in sampled_std_lines:
-                for elem in itertools.combinations(line, num):
-                    print(elem)
-                    if not is_validate(elem, former_freq, num):
-                        continue
-                    key_1 = sum(map(hash_func_1, elem)) % bucket_size
-                    dict_1[key_1] += 1
-                    key_2 = sum(map(hash_func_2, elem)) % bucket_size
-                    dict_2[key_2] += 1
-                    print(dict_1)
-                    print(dict_2)
-
-            freq_map = {}
-
-            for line in sampled_std_lines:
-                for elem in itertools.combinations(line, num):
-                    print(elem)
-                    print(freq_map)
-                    if not is_validate(elem, former_freq, num):
-                        continue
-                    if dict_1[sum(map(hash_func_1, elem)) % bucket_size] < support*lower_rate or dict_2[
-                                sum(map(hash_func_2, elem)) % bucket_size] < support*lower_rate:
-                        negative_border[elem] = 0
-                        print("add neg")
-                        continue
-                    if elem in freq_map:
-                        freq_map[elem] += 1
-                    else:
-                        freq_map[elem] = 1
-
-            print(freq_map)
-            former_freq = {}
-            for key, value in freq_map.items():
-                print(key)
-                print(value)
-                if value >= support*lower_rate:
-                    former_freq[key] = 0
-                else:
-                    negative_border[key] = 0
-
-            print(negative_border)
-
             for line in std_lines:
                 for elem in itertools.combinations(line, num):
-                    if elem in negative_border:
-                        negative_border[elem] += 1
-                    elif elem in former_freq:
-                        former_freq[elem] += 1
+                    if not former_freq_check(elem, former_freq, num):
+                        continue
+                    if elem in freq_candidate:
+                        freq_candidate[elem] += 1
+                    else:
+                        if elem in negative_border:
+                            negative_border[elem] += 1
+                        else:
+                            negative_border[elem] = 1
+
+            former_freq = set()
+            for key, value in freq_candidate.items():
+                if value >= support:
+                    former_freq.add(key)
+                # the reason of commenting out the two lines below
+                # is the value < support cannot make is_fail = True
+                # else:
+                #     negative_border[key] = value
 
             for key, value in negative_border.items():
                 if value >= support:
@@ -154,33 +156,16 @@ def _main():
             if is_fail == True:
                 break
 
-            cur_res = set()
-            print("FFFFFFF")
-            print(former_freq)
-            for key, value in former_freq.items():
-                if value >= support:
-                    cur_res.add(key)
-
-            if len(cur_res) == 0:
+            if len(former_freq) == 0:
                 does_finished = True
-                print("!!!!!!!!!!!!!!!!!")
                 break
 
-            res.append(cur_res)
-            print("RESSSSSSS")
-            print(res)
-
+            res.append(former_freq)
             num += 1
 
-            print("###############")
-            print("###############")
-            print("###############")
-        print("&&&&&&&")
         if does_finished == True:
             break
         time += 1
-
-
 
     if does_finished == True:
         output(time , fraction, res)

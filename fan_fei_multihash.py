@@ -36,7 +36,6 @@ def output(dict_1, dict_2, freq_set):
         file.write("\n")
         file.write(freq_set_to_str(freq_set))
         file.write("\n\n")
-        #print(sorted(list(freq_set)))
 
 def _main():
     # filename = sys.argv[2];
@@ -44,8 +43,8 @@ def _main():
     # bucket_size = sys.argv[4];
 
     filename = "input.txt"
-    support = 2
-    bucket_size = 5
+    support = 10
+    bucket_size = 30
 
     with open(filename, 'r') as input:
         lines = input.readlines()
@@ -62,22 +61,18 @@ def _main():
         for line in lines:
             elems = sorted(map(elem_std, line.split(",")))
             for elem in itertools.combinations(elems, num):
-                print(elem)
                 if not is_validate(elem, former_freq, num):
                     continue
                 key_1 = sum(map(hash_func_1, elem)) % bucket_size
                 dict_1[key_1] += 1
                 key_2 = sum(map(hash_func_2, elem)) % bucket_size
                 dict_2[key_2] += 1
-                print(dict_1)
-                print(dict_2)
 
         freq_map = {}
 
         for line in lines:
             elems = sorted(map(elem_std, line.split(",")))
             for elem in itertools.combinations(elems, num):
-                print(elem)
                 if not is_validate(elem, former_freq, num):
                     continue
                 if dict_1[sum(map(hash_func_1, elem)) % bucket_size] < support or dict_2[sum(map(hash_func_2, elem)) % bucket_size] < support:
@@ -90,8 +85,6 @@ def _main():
 
         former_freq = set()
         for key, value in freq_map.items():
-            print(key)
-            print(value)
             if value >= support:
                 former_freq.add(key)
 
@@ -101,11 +94,6 @@ def _main():
         output(dict_1, dict_2, former_freq)
 
         num += 1
-
-        print("###############")
-        print("###############")
-        print("###############")
-
 
 
 _main()
