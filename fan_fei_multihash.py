@@ -35,7 +35,7 @@ def output(dict_1, dict_2, freq_set):
         json.dump(dict_2, file)
         file.write("\n")
         file.write(freq_set_to_str(freq_set))
-        file.write("\n\n")
+        file.write("\n\n\n")
 
 def _main():
     filename = sys.argv[1]
