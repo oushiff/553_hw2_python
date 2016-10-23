@@ -3,11 +3,10 @@ import itertools
 import math
 
 
-class Collaborative_Filter(object):
-    def __init__(self):
-        self.users_dict = {}
-        self.user1_dict = {}
-        self.user1_avg = 0
+users_dict = {}
+user1_dict = {}
+user1_avg = 0
+weight_list = []
     # def init_dict(dict, bucket_size):
     #     i = 0
     #     while i < bucket_size:
@@ -30,63 +29,65 @@ class Collaborative_Filter(object):
     #         file.write("\n\n\n")
 
 
+def get_weight(item):
+    return item[1]
 
-    def pearson_correlation(user1, user2):
-        user2_list = self.users_dict[user2]
-        user2_avg = user2_list[0]
+def pearson_correlation(user1, user2):
+    user2_list = users_dict[user2]
+    user2_avg = user2_list[0]
 
-        numerator = 0
-        denominator1 = 0
-        denominator2 = 0
+    numerator = 0
+    denominator1 = 0
+    denominator2 = 0
 
-        i = 1
-        while i < len(user2_list):
-            cur_movie = user2_list[i][0]
-            if cur_movie in self.user1_dict:
-                u = self.user1_dict[cur_movie] - self.user1_avg
-                v = user2_list[i][1] - user2_avg
-                numerator += u * v
-                denominator1 += u * u
-                denominator2 += v * v
-            i += 1
-        return numerator/(math.sqrt(denominator1) * math.sqrt(denominator2))
+    i = 1
+    while i < len(user2_list):
+        cur_movie = user2_list[i][0]
+        if cur_movie in user1_dict:
+            u = user1_dict[cur_movie] - user1_avg
+            v = user2_list[i][1] - user2_avg
+            numerator += u * v
+            denominator1 += u * u
+            denominator2 += v * v
+        i += 1
+    return numerator/(math.sqrt(denominator1) * math.sqrt(denominator2))
 
-    def K_nearest_neighbors(user1, k):
-        pass
+def K_nearest_neighbors(user1, k):
+     sorted(weight_list, key = get_weight, reverse=True)
+     return weight_list[0:k]
 
+def Predict(user1, item, k_nearest_neighbors):
+    pass
 
-    def Predict(user1, item, k_nearest_neighbors):
-        pass
+def init_from_input(args):
+    filename = "ratings-dataset.tsv"
+    user_id = "Kluver"
+    movie = "The Fugitive"
+    k = 10
 
-    def init_from_input(args):
-        filename = "ratings-dataset.tsv"
-        user_id = "Kluver"
-        movie = "The Fugitive"
-        k = 10
+    with open(filename, 'r') as input:
+        lines = input.readlines()
 
-        with open(filename, 'r') as input:
-            lines = input.readlines()
+    for line in lines:
+        elems = line.split("\t")
+        for elem in elems:
+            elem = elem.trip()
+        if elem[0] == user_id:
+            user1_dict[elem[2]] = float(elem[1])
+            user1_avg += float(elem[1])
+            continue
 
-        for line in lines:
-            elems = line.split("\t")
-            for elem in elems:
-                elem = elem.trip()
-            if elem[0] == user_id:
-                self.user1_dict[elem[2]] = float(elem[1])
-                self.user1_avg += float(elem[1])
-                continue
+        if elem[0] in users_dict:
+            users_dict[elem[0]].append((elem[2], float(elem[1])))
+            users_dict[elem[0]][0] += float(elem[1])
+        else:
+            users_dict[elem[0]] = [(float(elem[1]))]
+            users_dict[elem[0]].append((elem[2], float(elem[1])))
 
-            if elem[0] in self.users_dict:
-                self.users_dict[elem[0]].append((elem[2], float(elem[1])))
-                self.users_dict[elem[0]][0] += float(elem[1])
-            else:
-                self.users_dict[elem[0]] = [(float(elem[1]))]
-                self.users_dict[elem[0]].append((elem[2], float(elem[1])))
+    user1_avg /= len(user1_dict)
 
-        self.user1_avg /= len(user1_dict)
-
-        for key, value in self.users_dict.items():
-            self.users_dict[key][0] /= len(users_dict[key] - 1)
+    for key, value in users_dict.items():
+        users_dict[key][0] /= len(users_dict[key] - 1)
 
 
 
@@ -96,10 +97,12 @@ def _main():
     # support = int(sys.argv[2])
     # bucket_size = int(sys.argv[3])
 
-    col_filter = Collaborative_Filter()
-    col_filter.init_from_input("aaaaa")
+    init_from_input("aaaaa")
+    for key in users_dict:
+        cur_weight = pearson_correlation(user_id, key)
+        weight_list.append((key, cur_weight))
 
-
+    K_nearest_neighbors(user_id, k)
 
 
 
