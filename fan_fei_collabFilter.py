@@ -1,7 +1,6 @@
 import sys
 import itertools
-import json
-
+import math
 
 
 class Collaborative_Filter(object):
@@ -33,21 +32,24 @@ class Collaborative_Filter(object):
 
 
     def pearson_correlation(user1, user2):
-        u_list = []
-        v_list = []
         user2_list = self.users_dict[user2]
         user2_avg = user2_list[0]
+
+        numerator = 0
+        denominator1 = 0
+        denominator2 = 0
+
         i = 1
         while i < len(user2_list):
             cur_movie = user2_list[i][0]
             if cur_movie in self.user1_dict:
-                u_list.append(self.user1_dict[cur_movie] - self.user1_avg)
-                v_list.append(user2_list[i][1] - user2_avg)
+                u = self.user1_dict[cur_movie] - self.user1_avg
+                v = user2_list[i][1] - user2_avg
+                numerator += u * v
+                denominator1 += u * u
+                denominator2 += v * v
             i += 1
-
-        i = 0
-        while i < len(u_list):
-            i += 1
+        return numerator/(math.sqrt(denominator1) * math.sqrt(denominator2))
 
     def K_nearest_neighbors(user1, k):
         pass
