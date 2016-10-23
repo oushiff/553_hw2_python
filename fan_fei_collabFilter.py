@@ -57,7 +57,21 @@ def K_nearest_neighbors(user1, k):
      return weight_list[0:k]
 
 def Predict(user1, item, k_nearest_neighbors):
-    pass
+    numerator = 0
+    denominator = 0
+    for elem in k_nearest_neighbors:
+        user2_list = users_dict[elem[0]]
+        user2_avg = user2_list[0]
+        cur_weight = elem[1]
+        i = 1
+        while i < len(user2_list):
+            cur_movie = user2_list[i][0]
+            if cur_movie in user1_dict:
+                numerator += (user2_list[i][1] - user2_avg) * cur_weight
+                denominator += math.abs(cur_weight)
+            i += 1
+
+    return user1_avg + numerator/denominator1
 
 def init_from_input(args):
     filename = "ratings-dataset.tsv"
@@ -102,8 +116,9 @@ def _main():
         cur_weight = pearson_correlation(user_id, key)
         weight_list.append((key, cur_weight))
 
-    K_nearest_neighbors(user_id, k)
+    k_nearest_neighbors = K_nearest_neighbors(user_id, k)
 
+    Predict(user_id, movie, k_nearest_neighbors)
 
 
 _main()
