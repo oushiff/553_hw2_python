@@ -60,8 +60,8 @@ def K_nearest_neighbors(user1, k):
     valide_list = []
     for elem in weight_list:
         #users_dict[elem[0]]
-        tmp_ls = [tmp_tuple[0] for tmp_tuple in users_dict[elem[0]]]
-        print(tmp_ls)
+        #tmp_ls = [tmp_tuple[0] for tmp_tuple in users_dict[elem[0]]]
+        #print(tmp_ls)
         if movie in [tmp_tuple[0] for tmp_tuple in users_dict[elem[0]]]:
             valide_list.append(elem)
     sorted_list = sorted(valide_list, key = get_weight, reverse=True)
@@ -74,7 +74,7 @@ def Predict(user1, item, k_nearest_neighbors):
     global tmp_users_avg_dict
     global movie
 
-    print(k_nearest_neighbors)
+    #print(k_nearest_neighbors)
     numerator = 0
     denominator = 0
     for elem in k_nearest_neighbors:
@@ -82,10 +82,10 @@ def Predict(user1, item, k_nearest_neighbors):
         user2_avg = user2_list[0]
         cur_weight = elem[1]
         i = 1
-        print(user2_list)
+        #print(user2_list)
         while i < len(user2_list):
             #cur_movie = user2_list[i][0]
-            print(user2_list[i][0])
+            #print(user2_list[i][0])
             if user2_list[i][0] == movie:
                 numerator += (user2_list[i][1] - tmp_users_avg_dict[elem[0]]) * cur_weight
                 denominator += abs(cur_weight)
@@ -104,21 +104,19 @@ def init_from_input(filename, user_id, movie, k):
 
     for line in lines:
         elems = line.split("\t")
-        for elem in elems:
-            elem = elem.strip()
 
-        if elems[0] == user_id:
-            user1_dict[elems[2]] = float(elems[1])
+        if elems[0].strip() == user_id:
+            user1_dict[elems[2].strip()] = float(elems[1])
             user1_all_avg += float(elems[1])
             continue
 
-        if elems[0] in users_dict:
-            users_dict[elems[0]].append((elems[2], float(elems[1])))
+        if elems[0].strip() in users_dict:
+            users_dict[elems[0].strip()].append((elems[2].strip(), float(elems[1])))
             #users_dict[elems[0]][0] += float(elems[1])
         else:
             #users_dict[elems[0]] = []
             #users_dict[elems[0]] = [float(elems[1]), (elems[2], float(elems[1]))]
-            users_dict[elems[0]] = [(elems[2], float(elems[1]))]
+            users_dict[elems[0].strip()] = [(elems[2].strip(), float(elems[1]))]
 
     user1_all_avg /= len(user1_dict)
 
