@@ -6,6 +6,7 @@ import math
 users_dict = {}
 user1_dict = {}
 user1_all_avg = 0
+tmp_users_avg_dict = {}
 weight_list = []
 movie = "unknown"
 
@@ -20,6 +21,7 @@ def pearson_correlation(user1, user2):
     # global user1_all_avg
     global users_dict
     global user1_dict
+    global tmp_users_avg_dict
 
     user2_list = users_dict[user2]
     user1_avg = 0
@@ -35,6 +37,7 @@ def pearson_correlation(user1, user2):
     length = len(user1_co_list)
     user1_avg /= length
     user2_avg /= length
+    tmp_users_avg_dict[user2] = user2_avg
 
     numerator = 0
     denominator1 = 0
@@ -66,6 +69,7 @@ def Predict(user1, item, k_nearest_neighbors):
     global user1_all_avg
     global users_dict
     global user1_dict
+    global tmp_users_avg_dict
 
     numerator = 0
     denominator = 0
@@ -75,10 +79,11 @@ def Predict(user1, item, k_nearest_neighbors):
         cur_weight = elem[1]
         i = 1
         while i < len(user2_list):
-            cur_movie = user2_list[i][0]
-            if cur_movie in user1_dict:
-                numerator += (user2_list[i][1] - user2_avg) * cur_weight
+            #cur_movie = user2_list[i][0]
+            if user2_list[i][0] == movie:
+                numerator += (user2_list[i][1] - tmp_users_avg_dict[elem[0]]) * cur_weight
                 denominator += abs(cur_weight)
+                break
             i += 1
 
     return user1_all_avg + numerator/denominator
