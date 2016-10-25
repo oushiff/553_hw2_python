@@ -7,7 +7,7 @@ users_dict = {}
 user1_dict = {}
 user1_all_avg = 0
 weight_list = []
-
+movie = "unknown"
 
 def print_neighbors(neighbors):
     for neighbor in neighbors:
@@ -52,7 +52,14 @@ def pearson_correlation(user1, user2):
 
 def K_nearest_neighbors(user1, k):
     global weight_list
-    sorted_list = sorted(weight_list, key = get_weight, reverse=True)
+    global movie
+
+    valide_list = []
+    for elem in weight_list:
+        #users_dict[elem[0]]
+        if movie in [tmp_tuple[0] for tmp_tuple in users_dict[elem[0]]]:
+            valide_list.append(elem)
+    sorted_list = sorted(valide_list, key = get_weight, reverse=True)
     return sorted_list[0:k]
 
 def Predict(user1, item, k_nearest_neighbors):
@@ -115,13 +122,16 @@ def _main():
     # support = int(sys.argv[2])
     # bucket_size = int(sys.argv[3])
 
+    global users_dict
+    global weight_list
+    global movie
+
     filename = "ratings-dataset.tsv"
     user_id = "Kluver"
     movie = "The Fugitive"
     k = 10
 
-    global users_dict
-    global weight_list
+    
 
     init_from_input(filename, user_id, movie, k)
     for key in users_dict:
