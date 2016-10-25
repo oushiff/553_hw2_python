@@ -5,7 +5,7 @@ import math
 
 users_dict = {}
 user1_dict = {}
-user1_avg = 0
+user1_all_avg = 0
 weight_list = []
 
 
@@ -17,26 +17,36 @@ def get_weight(item):
     return item[1]
 
 def pearson_correlation(user1, user2):
-    global user1_avg
+    # global user1_all_avg
     global users_dict
     global user1_dict
 
     user2_list = users_dict[user2]
-    user2_avg = user2_list[0]
+    user1_avg = 0
+    user2_avg = 0
+    user1_co_list = []
+    user2_co_list = []
+    for elem in user2_list:
+        if elem[0] in user1_dict:
+            user1_co_list.append(user1_dict[elem[0]])
+            user2_co_list.append(elem[1])
+            user1_avg += user1_dict[elem[0]]
+            user2_avg += elem[1]
+    length = len(user1_co_list)
+    user1_avg /= length
+    user2_avg /= length
 
     numerator = 0
     denominator1 = 0
     denominator2 = 0
 
     i = 1
-    while i < len(user2_list):
-        cur_movie = user2_list[i][0]
-        if cur_movie in user1_dict:
-            u = user1_dict[cur_movie] - user1_avg
-            v = user2_list[i][1] - user2_avg
-            numerator += u * v
-            denominator1 += u * u
-            denominator2 += v * v
+    while i < length:
+        u = user1_co_list[i] - user1_avg
+        v = user2_co_list[i] - user2_avg
+        numerator += u * v
+        denominator1 += u * u
+        denominator2 += v * v
         i += 1
     return numerator/(math.sqrt(denominator1) * math.sqrt(denominator2))
 
@@ -46,7 +56,7 @@ def K_nearest_neighbors(user1, k):
     return sorted_list[0:k]
 
 def Predict(user1, item, k_nearest_neighbors):
-    global user1_avg
+    global user1_all_avg
     global users_dict
     global user1_dict
 
@@ -64,10 +74,10 @@ def Predict(user1, item, k_nearest_neighbors):
                 denominator += abs(cur_weight)
             i += 1
 
-    return user1_avg + numerator/denominator
+    return user1_all_avg + numerator/denominator
 
 def init_from_input(filename, user_id, movie, k):
-    global user1_avg
+    global user1_all_avg
     global users_dict
     global user1_dict
     
@@ -81,20 +91,21 @@ def init_from_input(filename, user_id, movie, k):
 
         if elems[0] == user_id:
             user1_dict[elems[2]] = float(elems[1])
-            user1_avg += float(elems[1])
+            user1_all_avg += float(elems[1])
             continue
 
         if elems[0] in users_dict:
             users_dict[elems[0]].append((elems[2], float(elems[1])))
-            users_dict[elems[0]][0] += float(elems[1])
+            #users_dict[elems[0]][0] += float(elems[1])
         else:
-            users_dict[elems[0]] = []
-            users_dict[elems[0]] = [float(elems[1]), (elems[2], float(elems[1]))]
+            #users_dict[elems[0]] = []
+            #users_dict[elems[0]] = [float(elems[1]), (elems[2], float(elems[1]))]
+            users_dict[elems[0]] = [(elems[2], float(elems[1]))]
 
-    user1_avg /= len(user1_dict)
+    user1_all_avg /= len(user1_dict)
 
-    for key, value in users_dict.items():
-        users_dict[key][0] /= len(users_dict[key]) - 1
+    #for key, value in users_dict.items():
+    #    users_dict[key][0] /= len(users_dict[key]) - 1
 
 
 
