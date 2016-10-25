@@ -60,6 +60,8 @@ def K_nearest_neighbors(user1, k):
     valide_list = []
     for elem in weight_list:
         #users_dict[elem[0]]
+        tmp_ls = [tmp_tuple[0] for tmp_tuple in users_dict[elem[0]]]
+        print(tmp_ls)
         if movie in [tmp_tuple[0] for tmp_tuple in users_dict[elem[0]]]:
             valide_list.append(elem)
     sorted_list = sorted(valide_list, key = get_weight, reverse=True)
@@ -70,7 +72,9 @@ def Predict(user1, item, k_nearest_neighbors):
     global users_dict
     global user1_dict
     global tmp_users_avg_dict
+    global movie
 
+    print(k_nearest_neighbors)
     numerator = 0
     denominator = 0
     for elem in k_nearest_neighbors:
@@ -78,8 +82,10 @@ def Predict(user1, item, k_nearest_neighbors):
         user2_avg = user2_list[0]
         cur_weight = elem[1]
         i = 1
+        print(user2_list)
         while i < len(user2_list):
             #cur_movie = user2_list[i][0]
+            print(user2_list[i][0])
             if user2_list[i][0] == movie:
                 numerator += (user2_list[i][1] - tmp_users_avg_dict[elem[0]]) * cur_weight
                 denominator += abs(cur_weight)
