@@ -7,26 +7,7 @@ users_dict = {}
 user1_dict = {}
 user1_avg = 0
 weight_list = []
-    # def init_dict(dict, bucket_size):
-    #     i = 0
-    #     while i < bucket_size:
-    #         dict[i] = 0
-    #         i += 1
-    #
 
-
-
-    # def freq_set_to_str(freq_set):
-    #     return "[" + ", ".join(map(str, map(list, sorted(list(freq_set))))) + "]"
-    #
-    # def output(dict_1, dict_2, freq_set):
-    #     with open("output_multihash.txt", "a") as file:
-    #         json.dump(dict_1, file)
-    #         file.write("\n")
-    #         json.dump(dict_2, file)
-    #         file.write("\n")
-    #         file.write(freq_set_to_str(freq_set))
-    #         file.write("\n\n\n")
 
 def print_neighbors(neighbors):
     for neighbor in neighbors:
@@ -86,11 +67,6 @@ def Predict(user1, item, k_nearest_neighbors):
     return user1_avg + numerator/denominator
 
 def init_from_input(filename, user_id, movie, k):
-    # filename = "ratings-dataset.tsv"
-    # user_id = "Kluver"
-    # movie = "The Fugitive"
-    #k = 10
-
     global user1_avg
     global users_dict
     global user1_dict
@@ -100,11 +76,9 @@ def init_from_input(filename, user_id, movie, k):
 
     for line in lines:
         elems = line.split("\t")
-        #print(elems[0] + "  "+ elem[1] +"  " + elem[2] )
         for elem in elems:
             elem = elem.strip()
 
-        #print(elems[0] + "  "+ elems[1] +"  " + elems[2] )
         if elems[0] == user_id:
             user1_dict[elems[2]] = float(elems[1])
             user1_avg += float(elems[1])
@@ -115,11 +89,7 @@ def init_from_input(filename, user_id, movie, k):
             users_dict[elems[0]][0] += float(elems[1])
         else:
             users_dict[elems[0]] = []
-            #users_dict[elems[0]].append(float(elems[1]))
-            #users_dict[elems[0]].append((elems[2], float(elems[1])))
             users_dict[elems[0]] = [float(elems[1]), (elems[2], float(elems[1]))]
-           # users_dict[elem[0]].append()
-
 
     user1_avg /= len(user1_dict)
 
