@@ -12,7 +12,7 @@ movie = "unknown"
 
 def print_neighbors(neighbors):
     for neighbor in neighbors:
-        print(neighbor)
+        print(neighbor[0]+" %.5f" % neighbor[1])
 
 def get_weight(item):
     return item[1]
@@ -55,7 +55,6 @@ def pearson_correlation(user1, user2):
 def K_nearest_neighbors(user1, k):
     global weight_list
     global movie
-
     valide_list = []
     for elem in weight_list:
         if movie in [tmp_tuple[0] for tmp_tuple in users_dict[elem[0]]]:
@@ -137,6 +136,6 @@ def _main():
     print_neighbors(k_nearest_neighbors)
 
     predictd_rate = Predict(user_id, movie, k_nearest_neighbors)
-    print(predictd_rate)
+    print("%.5f" % predictd_rate)
 
 _main()
