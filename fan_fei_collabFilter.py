@@ -49,6 +49,8 @@ def pearson_correlation(user1, user2):
         denominator1 += u * u
         denominator2 += v * v
         i += 1
+    if denominator1 == 0 or denominator2 == 0:
+        return False
     return numerator/(math.sqrt(denominator1) * math.sqrt(denominator2))
 
 def K_nearest_neighbors(user1, k):
@@ -81,6 +83,8 @@ def Predict(user1, item, k_nearest_neighbors):
                 denominator += abs(cur_weight)
                 break
             i += 1
+    if denominator == 0:
+        return False
     return user1_all_avg + numerator/denominator
 
 def init_from_input(filename, user_id, movie, k):
@@ -117,12 +121,16 @@ def _main():
     init_from_input(filename, user_id, movie, k)
     for key in users_dict:
         cur_weight = pearson_correlation(user_id, key)
+        if cur_weight == False:
+            continue
         weight_list.append((key, cur_weight))
 
     k_nearest_neighbors = K_nearest_neighbors(user_id, k)
     print_neighbors(k_nearest_neighbors)
 
     predictd_rate = Predict(user_id, movie, k_nearest_neighbors)
+    if predictd_rate == False:
+        print("predictd_rate is erro")
     print("%.5f" % predictd_rate)
 
 _main()
