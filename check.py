@@ -1,34 +1,28 @@
 import os
 
-filename = "fan_fei_collabFilter.py"
+filename = """fan_fei_collabFilter.py"""
 
-command_lines = ["ratings-dataset.tsv 'Kluver' 'The Fugitive' 10",
-    "ratings-dataset.tsv 'Kluver' 'The Fugitive' 20",
-    "ratings-dataset.tsv 'Kluver' 'Ocean's Eleven' 30",
-    "ratings-dataset.tsv 'Kluver' 'Star Wars: Episode IV - A New Hope' 30",
-    "ratings-dataset.tsv 'hi mom' 'Catch Me If You Can' 30",
-    "ratings-dataset.tsv 'k279' 'Spider-Man 2' 30",
-    "ratings-dataset.tsv 'k279' 'Star Wars: Episode V - The Empire Strikes Back' 30",
-    "ratings-dataset.tsv 'k279' 'Titanic' 30",
-    "ratings-dataset.tsv '04bf3522-4cac-4579-999a-bdffd4c7d22f' 'Forrest Gump' 30",
-    "ratings-dataset.tsv '04bf3522-4cac-4579-999a-bdffd4c7d22f' 'Shrek' 30",
-    "ratings-dataset.tsv 'What makes you think I'm not?' 'Shrek' 30",
-    "ratings-dataset.tsv 'Connor M' 'Shrek 2' 30",
-    "ratings-dataset.tsv 'Connor M' 'X2: X-Men United' 30",
-    "ratings-dataset.tsv 'duder21' 'Titanic' 30",
-    "ratings-dataset.tsv 'duder21' 'Harry Potter and the Chamber of Secrets' 30",
-    "ratings-dataset.tsv 'Molly73' 'Spider-Man' 30",
-    "ratings-dataset.tsv 'Molly73' 'Gladiator' 30",
-    "ratings-dataset.tsv '142a1e51-8723-45d4-85b4-54b6f87b4d4f' 'The Bourne Identity' 30",
-    "ratings-dataset.tsv '142a1e51-8723-45d4-85b4-54b6f87b4d4f' 'Star Wars: Episode II - Attack of the Clones' 30"]
+command_lines = ["""ratings-dataset.tsv 'Kluver' 'The Fugitive' 10""",
+    """ratings-dataset.tsv 'Kluver' 'The Fugitive' 20""",
+    """ratings-dataset.tsv 'Kluver' 'The Lion King' 30""",
+    """ratings-dataset.tsv 'Kluver' 'Fight Club' 30""",
+    """ratings-dataset.tsv 'hi mom' 'Star Wars: Episode IV - A New Hope' 30""",
+    """ratings-dataset.tsv 'k279' 'Memento' 30""",
+    """ratings-dataset.tsv 'k279' 'The Patriot' 30""",
+    """ratings-dataset.tsv 'k279' 'Catch Me If You Can' 30""",
+    """ratings-dataset.tsv '04bf3522-4cac-4579-999a-bdffd4c7d22f' 'The Matrix' 30""",
+    """ratings-dataset.tsv '04bf3522-4cac-4579-999a-bdffd4c7d22f' 'Back to the Future' 30"""]
 
 
 
 
 
 def get_base():
-    return "python " + filename + " "
+    return """python """ + filename + """ """
 
+i = 0
 for line in command_lines:
-    os.system(get_base() + line + " >> output_file")
+    os.system('echo "'+str(i)+'\n"  >> output_file')
+    os.system(get_base() + line + """ >> output_file""")
     os.system('echo "\n\n"  >> output_file')
+    i += 1
