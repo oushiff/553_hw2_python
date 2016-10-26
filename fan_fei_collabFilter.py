@@ -1,7 +1,7 @@
 import sys
 import itertools
 import math
-
+import re
 
 users_dict = {}
 user1_dict = {}
@@ -41,7 +41,6 @@ def pearson_correlation(user1, user2):
     numerator = 0
     denominator1 = 0
     denominator2 = 0
-
     i = 0
     while i < length:
         u = user1_co_list[i] - user1_avg
@@ -76,14 +75,12 @@ def Predict(user1, item, k_nearest_neighbors):
         user2_avg = user2_list[0]
         cur_weight = elem[1]
         i = 0
-        #print(user2_list)
         while i < len(user2_list):
             if user2_list[i][0] == movie:
                 numerator += (user2_list[i][1] - tmp_users_avg_dict[elem[0]]) * cur_weight
                 denominator += abs(cur_weight)
                 break
             i += 1
-
     return user1_all_avg + numerator/denominator
 
 def init_from_input(filename, user_id, movie, k):
@@ -96,36 +93,26 @@ def init_from_input(filename, user_id, movie, k):
 
     for line in lines:
         elems = line.split("\t")
-
         if elems[0].strip() == user_id:
             user1_dict[elems[2].strip()] = float(elems[1])
             user1_all_avg += float(elems[1])
             continue
-
-        #print(elems)
         if elems[0].strip() in users_dict:
             users_dict[elems[0].strip()].append((elems[2].strip(), float(elems[1])))
         else:
             users_dict[elems[0].strip()] = [(elems[2].strip(), float(elems[1]))]
-
     user1_all_avg /= len(user1_dict)
 
 
 def _main():
-    # filename = sys.argv[1]
-    # support = int(sys.argv[2])
-    # bucket_size = int(sys.argv[3])
-
     global users_dict
     global weight_list
     global movie
 
-    filename = "ratings-dataset.tsv"
-    user_id = "Kluver"
-    movie = "The Fugitive"
-    k = 10
-
-    
+    filename = sys.argv[1]
+    user_id = sys.argv[2]
+    movie = sys.argv[3]
+    k = int(sys.argv[4])
 
     init_from_input(filename, user_id, movie, k)
     for key in users_dict:
