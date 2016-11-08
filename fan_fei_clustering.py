@@ -15,7 +15,7 @@ BIG = 3.0
 PARANUM = 6
 
 
-def getBuying(string):
+def getBuyingInt(string):
     return {
         "vhigh" : VHIGH,
         "high": HIGH,
@@ -23,7 +23,7 @@ def getBuying(string):
         "low" : LOW,
     }[string]
 
-def getMaint(string):
+def getMaintInt(string):
     return {
         "vhigh" : VHIGH,
         "high": HIGH,
@@ -31,7 +31,7 @@ def getMaint(string):
         "low" : LOW,
     }[string]
 
-def getDoors(string):
+def getDoorsInt(string):
     return {
         "2" : 2.0,
         "3": 3.0,
@@ -39,38 +39,88 @@ def getDoors(string):
         "5more" : FIVEMORE,
     }[string]
 
-def getPersons(string):
+def getPersonsInt(string):
     return {
         "2" : 2.0,
         "4" : 4.0,
         "more" : MORE,
     }[string]
 
-def getLug(string):
+def getLugInt(string):
     return {
         "small" : SMALL,
         "med" : MED,
         "big" : BIG,
     }[string]
 
-def getSafety(string):
+def getSafetyInt(string):
     return {
         "high": HIGH,
         "med" : MED,
         "low" : LOW,
     }[string]
 
+
+def getBuyingString(enumInt):
+    return {
+        VHIGH: "vhigh",
+        HIGH: "high",
+        MED: "med",
+        LOW: "low",
+    }[enumInt]
+
+def getMaintString(enumInt):
+    return {
+        VHIGH: "vhigh",
+        HIGH: "high",
+        MED: "med",
+        LOW: "low",
+    }[enumInt]
+
+def getDoorsString(enumInt):
+    return {
+        2: "2",
+        3: "3",
+        4: "4",
+        FIVEMORE: "5more",
+    }[enumInt]
+
+def getPersonsString(enumInt):
+    return {
+        2: "2",
+        4: "4",
+        MORE: "more",
+    }[enumInt]
+
+def getLugString(enumInt):
+    return {
+        SMALL: "small",
+        MED: "med",
+        BIG: "big",
+    }[enumInt]
+
+def getSafetyString(enumInt):
+    return {
+        HIGH: "high",
+        MED: "med",
+        LOW: "low",
+    }[enumInt]
+
+
 def parseCar(line):
     elems = line.strip().split(",")
     return (
-        getBuying(elems[0]),
-        getMaint(elems[1]),
-        getDoors(elems[2]),
-        getPersons(elems[3]),
-        getLug(elems[4]),
-        getSafety(elems[5]),
+        getBuyingInt(elems[0]),
+        getMaintInt(elems[1]),
+        getDoorsInt(elems[2]),
+        getPersonsInt(elems[3]),
+        getLugInt(elems[4]),
+        getSafetyInt(elems[5]),
         elems[6]
     )
+
+def carEnumToListString(car):
+    a1
 
 def calDistance(car1, car2):
     sum = 0
