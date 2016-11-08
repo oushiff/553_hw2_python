@@ -105,6 +105,15 @@ def compareClusters(clusters1, clusters2):
         index2 += 1
     return unFind1, unFind2
 
+def printInput(clusters, wrongNum):
+    print("cluster Num:  " + str(len(clusters)))
+    index = 0
+    for cluster in clusters:
+        print("[Cluster " + str(index) + "] " + cluster.name + str(cluster.num))
+        index += 1
+    print("WrongNum:  " + str(wrongNum))
+    print("\n\n")
+
 
 def _main():
     with open(file1, "r") as fp:
@@ -115,7 +124,10 @@ def _main():
 
     clusters1, wrongNum1 = splitLines(lines1)
     clusters2, wrongNum2 = splitLines(lines2)
-    
+    printInput(clusters1, wrongNum1)
+    printInput(clusters2, wrongNum2)
+    print("Compare")
+
     unFind1, unFind2 = compareClusters(clusters1, clusters2)
 
     success = True
