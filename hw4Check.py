@@ -75,7 +75,6 @@ def compareCluster(cluster1, cluster2):
     else:
         return False
 
-
 def compareClusters(clusters1, clusters2):
     matchesIdx1 = initMatches(len(clusters1))
     matchesIdx2 = initMatches(len(clusters2))
