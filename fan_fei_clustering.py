@@ -58,7 +58,15 @@ def getSafety(string):
 
 def parseCar(line):
     elems = line.strip().split(",")
-    a1 = 0
+    return (
+        getBuying(elems[0]),
+        getMaint(elems[1]),
+        getDoors(elems[2]),
+        getPersons(elems[3]),
+        getLug(elems[4]),
+        getSafety(elems[5]),
+        elems[6]
+    )
 
 
 def _main():
@@ -80,6 +88,34 @@ def _main():
     with open(initialFilename, "r") as fp:
         initialLines = fp.readlines()
 
+    inputCars = []
+    for line in inputLines:
+        inputCars.append(parseCar(line))
+
+    initialPoints = []
+    for line in initialLines:
+        initialPoints.append(parseCar(line))
+
 
 
 _main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
