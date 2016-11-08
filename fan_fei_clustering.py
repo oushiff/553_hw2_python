@@ -77,6 +77,7 @@ def calDistance(car1, car2):
     index = 0
     while index < PARANUM:
         sum += ((car1[index] - car2[index]) * (car1[index] - car2[index]))
+        index += 1
     return math.sqrt(sum)
 
 def allocateCar(centroids, car):
@@ -97,6 +98,7 @@ def clustering(centroids, cars):
     index = 0
     while index < num:
         clusters.append([])
+        index += 1
     for car in cars:
         clusterIdx = allocateCar(centroids, car)
         clusters[clusterIdx].append(car)
@@ -109,6 +111,7 @@ def calNewCentroid(cluster):
         index = 0
         while index < PARANUM:
             base[index] += car[index]
+            index += 1
 
     print(base)  #???
     for elem in base:
@@ -143,8 +146,12 @@ def assignName(cluster):
     else:
         return max2
 
-def findWrong():
-    pass
+def WrongNumInCluster(cluster, name):
+    num = 0
+    for car in cluster:
+        if car[6] != name:
+            num += 1
+    return num
 
 def printCluster(name, cluster):
     print("cluster: " + name)
@@ -152,7 +159,9 @@ def printCluster(name, cluster):
         print(list(car))
     print("\n\n")
 
-
+def printWrongs(num):
+    print("Number of points wrongly assigned:")
+    print(num)
 
 def _main():
     # filename = sys.argv[1]
@@ -187,12 +196,19 @@ def _main():
         centroids = []
         for cluster in clusters:
             centroids.append(calNewCentroid(cluster))
+        iterIdx += 1
 
+    names = []
     for cluster in clusters:
-        name = assignName(cluster)
-        printCluster(name, cluster)
+        names.append(assignName(cluster))
+        printCluster(names[-1], cluster)
 
-    findWrong()
+    index = 0
+    total = 0
+    for cluster in clusters:
+        total += WrongNumInCluster(cluster, names[index])
+        index += 1
+    printWrongs(total)
 
 _main()
 
