@@ -102,9 +102,21 @@ def clustering(centroids, cars):
     return clusters
 
 def calNewCentroid(cluster):
-
+    base = [0, 0, 0, 0, 0, 0]
+    num = len(cluster)
     for car in cluster:
-        pass
+        index = 0
+        while index < PARANUM:
+            base[index] += car[index]
+
+    print(base)  #???
+    for elem in base:
+        # ?????????????????????? can it change the list?
+        elem /= num
+    print(base)  # ???
+    
+    return (base[0], base[1], base[2], base[3], base[4], base[5], "unknow")
+
 
 def _main():
     # filename = sys.argv[1]
