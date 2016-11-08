@@ -120,7 +120,15 @@ def parseCar(line):
     )
 
 def carEnumToListString(car):
-    a1
+    elems = []
+    elems.append(getBuyingString(car[0]))
+    elems.append(getMaintString(car[1]))
+    elems.append(getDoorsString(car[2]))
+    elems.append(getPersonsString(car[3]))
+    elems.append(getLugString(car[4]))
+    elems.append(getSafetyString(car[5]))
+    elems.append(car[6])
+    return str(elems)
 
 def calDistance(car1, car2):
     sum = 0
@@ -206,7 +214,7 @@ def outputCluster(name, cluster, outputFile):
     stream = ""
     stream += "cluster: " + name + "\n"
     for car in cluster:
-        stream += str(list(car)) + "\n"
+        stream += carEnumToListString(car) + "\n"
     stream += "\n\n"
     with open(outputFile, "a") as fp:
         fp.write(stream)
