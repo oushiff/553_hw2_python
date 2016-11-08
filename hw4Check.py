@@ -15,10 +15,10 @@ class MyCluster(object):
         self.cars = cars
 
     def printCluster(self):
-        print(self.name)
+        print(self.name.strip())
         print(self.num)
-        for car in cars:
-            print(car)
+        for car in self.cars:
+            print(car.strip())
         print("\n\n")
 
 def initMatches(length):
@@ -62,7 +62,7 @@ def compareCluster(cluster1, cluster2):
         index = 0
         doesFind = False
         while index < len(cars2):
-            if cars1[-1] == cars2[index]:
+            if cars1[-1].strip() == cars2[index].strip():
                 doesFind = True
                 cars1.pop()
                 cars2.pop(index)
@@ -95,13 +95,14 @@ def compareClusters(clusters1, clusters2):
                 break
             index2 += 1
         if not findMatch:
-            unFind1.append(cluster1[index1])
+            unFind1.append(clusters1[index1])
         index1 += 1
 
     index2 = 0
     while index2 < len(matchesIdx2):
         if not matchesIdx2[index2]:
             unFind2.append(clusters2[index2])
+        index2 += 1
     return unFind1, unFind2
 
 
@@ -120,12 +121,14 @@ def _main():
     success = True
     if len(unFind1) != 0:
         success = False
+        print("UnFindNum in File1:  " + str(len(unFind1)))
         print("Doesn't Match in File1:")
         for cluster in unFind1:
             cluster.printCluster()
         print("\n\n\n\n\n\n")
     if len(unFind2) != 0:
         success = False
+        print("UnFindNum in File2:  " + str(len(unFind2)))
         print("Doesn't Match in File2:")
         for cluster in unFind2:
             cluster.printCluster()
