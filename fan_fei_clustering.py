@@ -113,11 +113,10 @@ def calNewCentroid(cluster):
             base[index] += car[index]
             index += 1
 
-    print(base)  #???
-    for elem in base:
-        # ?????????????????????? can it change the list?
-        elem /= num
-    print(base)  # ???
+    index = 0
+    while index < 6:
+        base[index] /= num
+        index += 1
 
     return (base[0], base[1], base[2], base[3], base[4], base[5], "unknow")
 
@@ -153,15 +152,21 @@ def WrongNumInCluster(cluster, name):
             num += 1
     return num
 
-def printCluster(name, cluster):
-    print("cluster: " + name)
+def outputCluster(name, cluster, outputFile):
+    stream = ""
+    stream += "cluster: " + name + "\n"
     for car in cluster:
-        print(list(car))
-    print("\n\n")
+        stream += str(list(car)) + "\n"
+    stream += "\n\n"
+    with open(outputFile, "a") as fp:
+        fp.write(stream)
 
-def printWrongs(num):
-    print("Number of points wrongly assigned:")
-    print(num)
+def outputWrongs(num, outputFile):
+    stream = ""
+    stream += "Number of points wrongly assigned:\n"
+    stream += str(num) + "\n"
+    with open(outputFile, "a") as fp:
+        fp.write(stream)
 
 def _main():
     # filename = sys.argv[1]
@@ -173,9 +178,10 @@ def _main():
     k = 4
     iter = 10
 
+    outputFile = "output"
 
-    # inputLines = []
-    # initialLines = []
+    inputLines = []
+    initialLines = []
     with open(dataFilename, "r") as fp:
         inputLines = fp.readlines()
 
@@ -191,6 +197,7 @@ def _main():
         centroids.append(parseCar(line))
 
     iterIdx = 0
+    clusters = []
     while iterIdx < iter:
         clusters = clustering(centroids, cars)
         centroids = []
@@ -201,14 +208,14 @@ def _main():
     names = []
     for cluster in clusters:
         names.append(assignName(cluster))
-        printCluster(names[-1], cluster)
+        outputCluster(names[-1], cluster, outputFile)
 
     index = 0
     total = 0
     for cluster in clusters:
         total += WrongNumInCluster(cluster, names[index])
         index += 1
-    printWrongs(total)
+    outputWrongs(total, outputFile)
 
 _main()
 
