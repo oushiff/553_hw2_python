@@ -14,6 +14,7 @@ BIG = 3.0
 
 PARANUM = 6
 
+
 def getBuying(string):
     return {
         "vhigh" : VHIGH,
@@ -114,8 +115,43 @@ def calNewCentroid(cluster):
         # ?????????????????????? can it change the list?
         elem /= num
     print(base)  # ???
-    
+
     return (base[0], base[1], base[2], base[3], base[4], base[5], "unknow")
+
+def assignName(cluster):
+    count = {
+        "unacc": 0,
+        "acc": 0,
+        "good": 0,
+        "vgood": 0,
+    }
+    for car in cluster:
+        count[car[6]] += 1
+
+    if count["unacc"] > count["acc"]:
+        max1 = "unacc"
+    else:
+        max1 = "acc"
+
+    if count["good"] > count["vgood"]:
+        max2 = "good"
+    else:
+        max2 = "vgood"
+
+    if count[max1] > count[max2]:
+        return max1
+    else:
+        return max2
+
+def findWrong():
+    pass
+
+def printCluster(name, cluster):
+    print("cluster: " + name)
+    for car in cluster:
+        print(list(car))
+    print("\n\n")
+
 
 
 def _main():
@@ -152,6 +188,11 @@ def _main():
         for cluster in clusters:
             centroids.append(calNewCentroid(cluster))
 
+    for cluster in clusters:
+        name = assignName(cluster)
+        printCluster(name, cluster)
+
+    findWrong()
 
 _main()
 
