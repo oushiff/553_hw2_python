@@ -1,15 +1,18 @@
+import math
 
-VHIGH = 4
-HIGH = 3
-MED = 2
-LOW = 1
 
-FIVEMORE = 5
-MORE = 6
+VHIGH = 4.0
+HIGH = 3.0
+MED = 2.0
+LOW = 1.0
 
-SMALL = 1
-BIG = 3
+FIVEMORE = 5.0
+MORE = 6.0
 
+SMALL = 1.0
+BIG = 3.0
+
+PARANUM = 6
 
 def getBuying(string):
     return {
@@ -29,16 +32,16 @@ def getMaint(string):
 
 def getDoors(string):
     return {
-        "2" : 2,
-        "3": 3,
-        "4" : 4,
+        "2" : 2.0,
+        "3": 3.0,
+        "4" : 4.0,
         "5more" : FIVEMORE,
     }[string]
 
 def getPersons(string):
     return {
-        "2" : 2,
-        "4" : 4,
+        "2" : 2.0,
+        "4" : 4.0,
         "more" : MORE,
     }[string]
 
@@ -68,6 +71,40 @@ def parseCar(line):
         elems[6]
     )
 
+def calDistance(car1, car2):
+    sum = 0
+    index = 0
+    while index < PARANUM:
+        sum += ((car1[index] - car2[index]) * (car1[index] - car2[index]))
+    return math.sqrt(sum)
+
+def allocateCar(centroids, car):
+    min = float("inf")
+    minIdx = -1
+    index = 0
+    for centroid in centroids:
+        distance = calDistance(centroid, car)
+        if distance < min:
+            min = distance
+            minIdx = index
+        index += 1
+    return minIdx
+
+def clustering(centroids, cars):
+    clusters = []
+    num = len(centroids)
+    index = 0
+    while index < num:
+        clusters.append([])
+    for car in cars:
+        clusterIdx = allocateCar(centroids, car)
+        clusters[clusterIdx].append(car)
+    return clusters
+
+def calNewCentroid(cluster):
+
+    for car in cluster:
+        pass
 
 def _main():
     # filename = sys.argv[1]
@@ -80,22 +117,28 @@ def _main():
     iter = 10
 
 
-    inputLines = []
-    initialLines = []
+    # inputLines = []
+    # initialLines = []
     with open(dataFilename, "r") as fp:
         inputLines = fp.readlines()
 
     with open(initialFilename, "r") as fp:
         initialLines = fp.readlines()
 
-    inputCars = []
+    cars = []
     for line in inputLines:
-        inputCars.append(parseCar(line))
+        cars.append(parseCar(line))
 
-    initialPoints = []
+    centroids = []
     for line in initialLines:
-        initialPoints.append(parseCar(line))
+        centroids.append(parseCar(line))
 
+    iterIdx = 0
+    while iterIdx < iter:
+        clusters = clustering(centroids, cars)
+        centroids = []
+        for cluster in clusters:
+            centroids.append(calNewCentroid(cluster))
 
 
 _main()
