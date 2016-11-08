@@ -17,8 +17,17 @@ class MyCluster(object):
     def printCluster(self):
         print(self.name)
         print(self.num)
-        print(self.cars)
+        for car in cars:
+            print(car)
+        print("\n\n")
 
+def initMatches(length):
+    matches = []
+    index = 0
+    while index < length:
+        matches.append(False)
+        index += 1
+    return matches
 
 def splitLines(lines):
     wrongNum = 0
@@ -67,17 +76,11 @@ def compareCluster(cluster1, cluster2):
         return False
 
 
-def initMatches(length):
-    matches = []
-    index = 0
-    while index < length:
-        matches.append(False)
-        index += 1
-    return matches
-
 def compareClusters(clusters1, clusters2):
     matchesIdx1 = initMatches(len(clusters1))
     matchesIdx2 = initMatches(len(clusters2))
+    unFind1 = []
+    unFind2 = []
     index1 = 0
     while index1 < len(clusters1):
         findMatch = False
@@ -86,12 +89,22 @@ def compareClusters(clusters1, clusters2):
             if matchesIdx2[index2]:
                 index2 += 1
                 continue
-            findMatch = compareCluster(clusters1[index1], clusters1[index1])
+            findMatch = compareCluster(clusters1[index1], clusters2[index2])
             if findMatch == True:
                 matchesIdx1[index1] = True
                 matchesIdx2[index2] = True
                 break
             index2 += 1
+        if not findMatch:
+            unFind1.append(cluster1[index1])
+        index1 += 1
+
+    index2 = 0
+    while index2 < len(matchesIdx2):
+        if not matchesIdx2[index2]:
+            unFind2.append(clusters2[index2])
+    return unFind1, unFind2
+
 
 def _main():
     with open(file1, "r") as fp:
@@ -103,13 +116,28 @@ def _main():
     clusters1, wrongNum1 = splitLines(lines1)
     clusters2, wrongNum2 = splitLines(lines2)
     
-    compareClusters(clusters1, clusters2)
+    unFind1, unFind2 = compareClusters(clusters1, clusters2)
 
+    success = True
+    if len(unFind1) != 0:
+        success = False
+        print("Doesn't Match in File1:")
+        for cluster in unFind1:
+            cluster.printCluster()
+        print("\n\n\n\n\n\n")
+    if len(unFind2) != 0:
+        success = False
+        print("Doesn't Match in File2:")
+        for cluster in unFind2:
+            cluster.printCluster()
+        print("\n\n\n\n\n\n")
     if wrongNum1 != wrongNum2:
+        success = False
         print("wrongNum doesn't match!:")
         print(str(wrongNum1) + "   " + str(wrongNum2))
 
-
+    if success:
+        print("Success!")
 
 _main()
 
