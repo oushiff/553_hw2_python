@@ -1,5 +1,9 @@
+import copy
+
 file1 = "output"
 file2 = "outputSample.txt"
+
+
 
 
 class MyCluster(object):

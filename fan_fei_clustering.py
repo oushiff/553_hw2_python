@@ -1,109 +1,97 @@
 import math
-
-
-VHIGH = 4.0
-HIGH = 3.0
-MED = 2.0
-LOW = 1.0
-
-FIVEMORE = 5.0
-MORE = 6.0
-
-SMALL = 1.0
-BIG = 3.0
+import sys
 
 PARANUM = 6
 
-
 def getBuyingInt(string):
     return {
-        "vhigh" : VHIGH,
-        "high": HIGH,
-        "med" : MED,
-        "low" : LOW,
+        "vhigh" : 0.0,
+        "high": 1.0,
+        "med" : 2.0,
+        "low" : 3.0,
     }[string]
 
 def getMaintInt(string):
     return {
-        "vhigh" : VHIGH,
-        "high": HIGH,
-        "med" : MED,
-        "low" : LOW,
+        "vhigh" : 0.0,
+        "high": 1.0,
+        "med" : 2.0,
+        "low" : 3.0,
     }[string]
 
 def getDoorsInt(string):
     return {
-        "2" : 2.0,
-        "3": 3.0,
-        "4" : 4.0,
-        "5more" : FIVEMORE,
+        "2" : 0.0,
+        "3": 1.0,
+        "4" : 2.0,
+        "5more" : 3.0,
     }[string]
 
 def getPersonsInt(string):
     return {
-        "2" : 2.0,
-        "4" : 4.0,
-        "more" : MORE,
+        "2" : 0.0,
+        "4" : 1.0,
+        "more" : 2.0,
     }[string]
 
 def getLugInt(string):
     return {
-        "small" : SMALL,
-        "med" : MED,
-        "big" : BIG,
+        "small" : 0.0,
+        "med" : 1.0,
+        "big" : 2.0,
     }[string]
 
 def getSafetyInt(string):
     return {
-        "high": HIGH,
-        "med" : MED,
-        "low" : LOW,
+        "high": 0.0,
+        "med" : 1.0,
+        "low" : 2.0,
     }[string]
 
 
 def getBuyingString(enumInt):
     return {
-        VHIGH: "vhigh",
-        HIGH: "high",
-        MED: "med",
-        LOW: "low",
+        0: "vhigh",
+        1: "high",
+        2: "med",
+        3: "low",
     }[enumInt]
 
 def getMaintString(enumInt):
     return {
-        VHIGH: "vhigh",
-        HIGH: "high",
-        MED: "med",
-        LOW: "low",
+        0: "vhigh",
+        1: "high",
+        2: "med",
+        3: "low",
     }[enumInt]
 
 def getDoorsString(enumInt):
     return {
-        2: "2",
-        3: "3",
-        4: "4",
-        FIVEMORE: "5more",
+        0: "2",
+        1: "3",
+        2: "4",
+        3: "5more",
     }[enumInt]
 
 def getPersonsString(enumInt):
     return {
-        2: "2",
-        4: "4",
-        MORE: "more",
+        0: "2",
+        1: "4",
+        2: "more",
     }[enumInt]
 
 def getLugString(enumInt):
     return {
-        SMALL: "small",
-        MED: "med",
-        BIG: "big",
+        0: "small",
+        1: "med",
+        2: "big",
     }[enumInt]
 
 def getSafetyString(enumInt):
     return {
-        HIGH: "high",
-        MED: "med",
-        LOW: "low",
+        0: "high",
+        1: "med",
+        2: "low",
     }[enumInt]
 
 
@@ -227,14 +215,15 @@ def outputWrongs(num, outputFile):
         fp.write(stream)
 
 def _main():
-    # filename = sys.argv[1]
-    # support = int(sys.argv[2])
-    # bucket_size = int(sys.argv[3])
+    dataFilename = sys.argv[1]
+    initialFilename = sys.argv[2]
+    k = int(sys.argv[3])
+    iter = int(sys.argv[4])
 
-    dataFilename = "input_car.txt"
-    initialFilename = "initialPoints.txt"
-    k = 4
-    iter = 10
+    # dataFilename = "input_car.txt"
+    # initialFilename = "initialPoints.txt"
+    # k = 4
+    # iter = 10
 
     outputFile = "output"
 
@@ -276,23 +265,4 @@ def _main():
     outputWrongs(total, outputFile)
 
 _main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
