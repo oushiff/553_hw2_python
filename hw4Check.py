@@ -1,6 +1,6 @@
 import copy
 
-file1 = "output"
+file1 = "output_sub"
 file2 = "outputSample.txt"
 
 
