@@ -5,18 +5,18 @@ PARANUM = 6
 
 def getBuyingInt(string):
     return {
-        "vhigh" : 0.0,
-        "high": 1.0,
-        "med" : 2.0,
-        "low" : 3.0,
+        "vhigh" : 3.0,
+        "high": 2.0,
+        "med" : 1.0,
+        "low" : 0.0,
     }[string]
 
 def getMaintInt(string):
     return {
-        "vhigh" : 0.0,
-        "high": 1.0,
-        "med" : 2.0,
-        "low" : 3.0,
+        "vhigh" : 3.0,
+        "high": 2.0,
+        "med" : 1.0,
+        "low" : 0.0,
     }[string]
 
 def getDoorsInt(string):
@@ -43,26 +43,26 @@ def getLugInt(string):
 
 def getSafetyInt(string):
     return {
-        "high": 0.0,
+        "high": 2.0,
         "med" : 1.0,
-        "low" : 2.0,
+        "low" : 0.0,
     }[string]
 
 
 def getBuyingString(enumInt):
     return {
-        0: "vhigh",
-        1: "high",
-        2: "med",
-        3: "low",
+        3: "vhigh",
+        2: "high",
+        1: "med",
+        0: "low",
     }[enumInt]
 
 def getMaintString(enumInt):
     return {
-        0: "vhigh",
-        1: "high",
-        2: "med",
-        3: "low",
+        3: "vhigh",
+        2: "high",
+        1: "med",
+        0: "low",
     }[enumInt]
 
 def getDoorsString(enumInt):
@@ -89,9 +89,9 @@ def getLugString(enumInt):
 
 def getSafetyString(enumInt):
     return {
-        0: "high",
+        2: "high",
         1: "med",
-        2: "low",
+        0: "low",
     }[enumInt]
 
 
