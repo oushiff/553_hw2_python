@@ -4,6 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+def get_edge_credit(edge):
+    return (edge[2]).get("credit")
+
 def get_bfs_2d_array(G, root_name):
     G.node[root_name]["credit"] = 1
     bfs_2d_array = [[root_name]]
@@ -60,34 +63,47 @@ def get_betweenness(G):
 # def edges_cmp(x, y):
 #     return x[2] - y[2]
 
-def get_edge_credit(edge):
-    return (edge[2]).get("credit")
 
 
 def find_cluster(G):
-    #edges = [x for x in G.edges_iter(data=True)]
-    #print(edges)
     sorted_edges = sorted(G.edges_iter(data=True), key=get_edge_credit, reverse=True)
     print(sorted_edges)
-    dendrogram = community.generate_dendrogram(G)
 
-    print("dasfwfwefwe")
-    print(dendrogram)
-    print("dasfwfwefwe")
-    max = 0
-    maxIdx = 0
-    index = 0
-    for level in range(len(dendrogram) - 1):
-        part= community.partition_at_level(dendrogram, level)
-        mod = community.modularity(part, G)
+    nodes_num = len(G.nodes())
+    edges_num = len(G.edges())
+    edge_index = 0
+    max_mod = -1
+    partition_num = 0
+    max_partition = {}
+
+
+    while True:
+        count = 0
+        partition = {}
+        for part in nx.connected_components(G):
+            for node in part:
+                partition[node] = count
+            count += 1
+        print(partition)
+        if count == nodes_num:
+            break
+        mod = community.modularity(partition, G)
         print(mod)
-        if mod > max:
-            max = mod
-            maxIdx = index
-        index += 1
-    print(max)
-    print(maxIdx)
+        if mod > max_mod:
+            max_mod = mod
+            partition_num = count
+            max_partition = partition
 
+        max_credit = sorted_edges[edge_index][2]
+        while edge_index < edges_num and sorted_edges[edge_index][2] == max_credit:
+            # cur_edge = sorted_edges[edge_index]
+            G.remove_edge(sorted_edges[edge_index][0],sorted_edges[edge_index][1])
+            edge_index += 1
+
+    return max_mod, partition_num, max_partition
+
+
+def assign_colors(G, partition):
 
 
 def print_nodes(G):
@@ -125,15 +141,26 @@ def _main():
 
     get_betweenness(G)
     #print_edges(G)
-    find_cluster(G)
 
+
+    # for part in nx.connected_components(G):
+    #     print(part)
+    #     aa = len(part)
+    #     print(aa)
+    max_mod, partition_num, max_partition = find_cluster(G.copy())
+
+    print(max_mod)
+    print(max_partition)
+
+    assign_colors(G, max_partition, partition_num)
 
     pos = nx.spring_layout(G)
 
 
     nx.draw_networkx_nodes(G, pos)
     nx.draw_networkx_edges(G, pos)
-    nx.draw_networkx_edge_labels(G, pos)
+    #nx.draw_networkx_edge_labels(G, pos)
+    nx.draw_networkx_labels(G, pos)
 
     # nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_color=values)
 
