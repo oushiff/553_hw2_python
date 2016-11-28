@@ -1,5 +1,5 @@
 import networkx as nx
-
+import community
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -69,6 +69,26 @@ def find_cluster(G):
     #print(edges)
     sorted_edges = sorted(G.edges_iter(data=True), key=get_edge_credit, reverse=True)
     print(sorted_edges)
+    dendrogram = community.generate_dendrogram(G)
+
+    print("dasfwfwefwe")
+    print(dendrogram)
+    print("dasfwfwefwe")
+    max = 0
+    maxIdx = 0
+    index = 0
+    for level in range(len(dendrogram) - 1):
+        part= community.partition_at_level(dendrogram, level)
+        mod = community.modularity(part, G)
+        print(mod)
+        if mod > max:
+            max = mod
+            maxIdx = index
+        index += 1
+    print(max)
+    print(maxIdx)
+
+
 
 def print_nodes(G):
     for n, d in G.nodes_iter(data=True):
