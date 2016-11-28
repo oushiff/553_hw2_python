@@ -3,11 +3,6 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 
-# def init_graph(G):
-#     for node_name in G.nodes():
-#         G.node[node_name]["credit"] = 1
-#     for edge_name in G.edges():
-#
 
 def get_bfs_2d_array(G, root_name):
     G.node[root_name]["credit"] = 1
@@ -62,6 +57,19 @@ def get_betweenness(G):
         edge[2]["credit"] /= 2
 
 
+# def edges_cmp(x, y):
+#     return x[2] - y[2]
+
+def get_edge_credit(edge):
+    return (edge[2]).get("credit")
+
+
+def find_cluster(G):
+    #edges = [x for x in G.edges_iter(data=True)]
+    #print(edges)
+    sorted_edges = sorted(G.edges_iter(data=True), key=get_edge_credit, reverse=True)
+    print(sorted_edges)
+
 def print_nodes(G):
     for n, d in G.nodes_iter(data=True):
         print(n)
@@ -71,7 +79,6 @@ def print_nodes(G):
 
 def print_edges(G):
     for edge in G.edges_iter(data=True):
-        edge[2]["credit"] /= 2
         print(edge)
     print("\nEdges  End\n\n\n")
 
@@ -95,14 +102,11 @@ def _main():
     if len(G.edges()) == 0:
         return
 
-    # for n, d in G.nodes_iter(data=True):
-    #     print(n)
-    #     print(d)
-    #     print(">>>>>>")
 
-    #init_graph(G)
     get_betweenness(G)
-    print_edges(G)
+    #print_edges(G)
+    find_cluster(G)
+
 
     pos = nx.spring_layout(G)
 
