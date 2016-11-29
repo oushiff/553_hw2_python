@@ -2,7 +2,6 @@ import networkx as nx
 import community
 import numpy as np
 import matplotlib.pyplot as plt
-from random import random
 import sys
 
 
@@ -37,19 +36,9 @@ def assign_edge_credit(G, bfs_2d_array):
     while level_index > 0:
         cur_level = bfs_2d_array[level_index]
         for cur_node_name in cur_level.keys():
-            count = 0
             aboves = bfs_2d_array[level_index - 1]
-            # for neigher_name in G.neighbors(cur_node_name):
-            #     if neigher_name in aboves:
-            #         count += 1
-            #
-
             for neigher_name in G.neighbors(cur_node_name):
                 if neigher_name in aboves:
-                    # print("this  node:  " + cur_node_name + "  " + str(cur_level[cur_node_name]))
-                    # print("above node:  " + neigher_name + "  " + str(aboves[neigher_name]))
-                    # print(G.node[cur_node_name]["credit"])
-                    # print("  ")
                     increase_credit = (G.node[cur_node_name]["credit"] * aboves[neigher_name] * 1.0) / cur_level[cur_node_name]
                     G.edge[neigher_name][cur_node_name]["credit"] += increase_credit
                     G.node[neigher_name]["credit"] += increase_credit
@@ -59,49 +48,44 @@ def assign_edge_credit(G, bfs_2d_array):
 def get_bet_from_root(G, root_name):
     bfs_2d_array = get_bfs_2d_array(G, root_name)
     assign_edge_credit(G, bfs_2d_array)
-    # print("root: " + root_name)
-    # print_nodes(G)
+
+
 
 def get_betweenness(G):
     for node_name in G.nodes():
         get_bet_from_root(G, node_name)
-        # print(node_name)
-        # print_nodes(G)
     for edge in G.edges_iter(data=True):
         edge[2]["credit"] /= 2.0
 
 
 def find_cluster(G):
-    sorted_edges = sorted(G.edges_iter(data=True), key=get_edge_credit, reverse=True)
-    nodes_num = len(G.nodes())
-    edges_num = len(G.edges())
-    edge_index = 0
     max_mod = -1
     partition_num = 0
     max_partition = {}
-
+    new_G = G.copy()
     while True:
         count = 0
         partition = {}
-        for part in nx.connected_components(G):
+        for part in nx.connected_components(new_G):
             for node in part:
                 partition[node] = count
             count += 1
-        #print(partition)
-        if count == nodes_num:
+        if count == len(new_G.nodes()):
             break
+        # Use ORIGINAL G  !!!
         mod = community.modularity(partition, G)
-        #print(mod)
         if mod > max_mod:
             max_mod = mod
             partition_num = count
             max_partition = partition
-
+        sorted_edges = sorted(new_G.edges_iter(data=True), key=get_edge_credit, reverse=True)
+        edge_index = 0
         max_credit = sorted_edges[edge_index][2]
-        while edge_index < edges_num and sorted_edges[edge_index][2] == max_credit:
-            G.remove_edge(sorted_edges[edge_index][0],sorted_edges[edge_index][1])
+        while edge_index < len(new_G.edges()) and sorted_edges[edge_index][2] == max_credit:
+            new_G.remove_edge(sorted_edges[edge_index][0], sorted_edges[edge_index][1])
             edge_index += 1
-
+        # Compute New Betweenness AGAIN  !!!
+        get_betweenness(new_G)
     return max_mod, partition_num, max_partition
 
 
@@ -111,7 +95,6 @@ def get_colors_list(G, partition, partition_num):
     while index < partition_num:
         color_map[index] = (index * 1.0) / partition_num
         index += 1
-    #print(color_map)
     return [color_map.get(partition[node], 0.25) for node in G.nodes()]
 
 def output_partitions(partition, partition_num):
@@ -166,11 +149,8 @@ def _main():
         return
 
     get_betweenness(G)
-    print_edges(G)
-    max_mod, partition_num, max_partition = find_cluster(G.copy())
-    # print("     ")
-    # print(max_mod)
-    # print(max_partition)
+    max_mod, partition_num, max_partition = find_cluster(G)
+
     output_partitions(max_partition, partition_num)
     color_list = get_colors_list(G, max_partition, partition_num)
 
