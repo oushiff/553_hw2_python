@@ -3,6 +3,7 @@ import community
 import numpy as np
 import matplotlib.pyplot as plt
 from random import random
+import sys
 
 
 def get_edge_credit(edge):
