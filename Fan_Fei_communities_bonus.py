@@ -10,7 +10,7 @@ def get_edge_credit(edge):
     return (edge[2]).get("credit")
 
 def get_bfs_2d_array(G, root_name):
-    G.node[root_name]["credit"] = 1
+    G.node[root_name]["credit"] = 1.0
     bfs_2d_array = [[root_name]]
     arriveds = set([root_name])
     level_index = 0
@@ -19,7 +19,7 @@ def get_bfs_2d_array(G, root_name):
         for cur_node_name in bfs_2d_array[level_index]:
             for next_node_name in G.neighbors(cur_node_name):
                 if next_node_name not in arriveds:
-                    G.node[next_node_name]["credit"] = 1
+                    G.node[next_node_name]["credit"] = 1.0
                     new_level.append(next_node_name)
                     arriveds.add(next_node_name)
         if len(new_level) == 0:
@@ -37,7 +37,7 @@ def assign_edge_credit(G, bfs_2d_array):
             for neigher_name in G.neighbors(cur_node_name):
                 if neigher_name in aboves:
                     count += 1
-            increase_credit = G.node[cur_node_name]["credit"] / count
+            increase_credit = (G.node[cur_node_name]["credit"] * 1.0) / count
             for neigher_name in G.neighbors(cur_node_name):
                 if neigher_name in aboves:
                     G.edge[neigher_name][cur_node_name]["credit"] += increase_credit
@@ -48,6 +48,8 @@ def assign_edge_credit(G, bfs_2d_array):
 def get_bet_from_root(G, root_name):
     bfs_2d_array = get_bfs_2d_array(G, root_name)
     assign_edge_credit(G, bfs_2d_array)
+    print("root: " + root_name)
+    print_nodes(G)
 
 def get_betweenness(G):
     for node_name in G.nodes():
@@ -55,7 +57,7 @@ def get_betweenness(G):
         # print(node_name)
         # print_nodes(G)
     for edge in G.edges_iter(data=True):
-        edge[2]["credit"] /= 2
+        edge[2]["credit"] /= 2.0
 
 
 def find_cluster(G):
@@ -101,6 +103,26 @@ def get_colors_list(G, partition, partition_num):
     #print(color_map)
     return [color_map.get(partition[node], 0.25) for node in G.nodes()]
 
+def output_partitions(partition, partition_num):
+    partitions_list = []
+    index = 0
+    while index < partition_num:
+        partitions_list.append([])
+        index += 1
+    for key, value in partition.items():
+        partitions_list[value].append(key)
+    sorted_list = []
+    for ls in partitions_list:
+        int_ls = [int(x) for x in ls]
+        sorted_list.append(sorted(int_ls))
+    sorted_list = sorted(sorted_list)
+    for ls in sorted_list:
+        print(list_string(ls))
+
+def list_string(ls):
+    str_ls = [str(x) for x in ls]
+    return "[" + ",".join(str_ls) + "]"
+
 def print_nodes(G):
     for n, d in G.nodes_iter(data=True):
         print(n)
@@ -127,17 +149,18 @@ def _main():
     G = nx.Graph()
     for line in lines:
         nodes = line.split(" ")
-        G.add_edge(nodes[0].strip(), nodes[1].strip(), {"credit": 0})
+        G.add_edge(nodes[0].strip(), nodes[1].strip(), {"credit": 0.0})
 
     if len(G.edges()) == 0:
         return
 
     get_betweenness(G)
+    print_edges(G)
     max_mod, partition_num, max_partition = find_cluster(G.copy())
     # print("     ")
     # print(max_mod)
     # print(max_partition)
-
+    output_partitions(max_partition, partition_num)
     color_list = get_colors_list(G, max_partition, partition_num)
 
     pos = nx.spring_layout(G)
