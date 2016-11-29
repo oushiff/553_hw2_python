@@ -114,11 +114,11 @@ def print_edges(G):
 
 
 def _main():
-    # dataFilename = sys.argv[1]
-    # initialFilename = sys.argv[2]
+    inputFilename = sys.argv[1]
+    outputImage = sys.argv[2]
 
-    inputFilename = "input.txt"
-    outputImage = "image.png"
+    # inputFilename = "input.txt"
+    # outputImage = "image.png"
 
     with open(inputFilename, "r") as fp:
         lines = fp.readlines()
