@@ -11,19 +11,23 @@ def get_edge_credit(edge):
 
 def get_bfs_2d_array(G, root_name):
     G.node[root_name]["credit"] = 1.0
-    bfs_2d_array = [[root_name]]
+    bfs_2d_array = [{root_name: 1}]
     arriveds = set([root_name])
     level_index = 0
     while True:
-        new_level = []
-        for cur_node_name in bfs_2d_array[level_index]:
+        new_level = {}
+        cur_level = bfs_2d_array[level_index]
+        for cur_node_name in cur_level.keys():
             for next_node_name in G.neighbors(cur_node_name):
                 if next_node_name not in arriveds:
-                    G.node[next_node_name]["credit"] = 1.0
-                    new_level.append(next_node_name)
-                    arriveds.add(next_node_name)
+                    if next_node_name in new_level:
+                        new_level[next_node_name] += cur_level[cur_node_name]
+                    else:
+                        new_level[next_node_name] = cur_level[cur_node_name]
+                        G.node[next_node_name]["credit"] = 1.0
         if len(new_level) == 0:
             break
+        arriveds |= set(new_level.keys())
         bfs_2d_array.append(new_level)
         level_index += 1
     return bfs_2d_array
@@ -31,15 +35,22 @@ def get_bfs_2d_array(G, root_name):
 def assign_edge_credit(G, bfs_2d_array):
     level_index = len(bfs_2d_array) - 1
     while level_index > 0:
-        for cur_node_name in bfs_2d_array[level_index]:
+        cur_level = bfs_2d_array[level_index]
+        for cur_node_name in cur_level.keys():
             count = 0
-            aboves = set(bfs_2d_array[level_index - 1])
+            aboves = bfs_2d_array[level_index - 1]
+            # for neigher_name in G.neighbors(cur_node_name):
+            #     if neigher_name in aboves:
+            #         count += 1
+            #
+
             for neigher_name in G.neighbors(cur_node_name):
                 if neigher_name in aboves:
-                    count += 1
-            increase_credit = (G.node[cur_node_name]["credit"] * 1.0) / count
-            for neigher_name in G.neighbors(cur_node_name):
-                if neigher_name in aboves:
+                    print("this  node:  " + cur_node_name + "  " + str(cur_level[cur_node_name]))
+                    print("above node:  " + neigher_name + "  " + str(aboves[neigher_name]))
+                    print(G.node[cur_node_name]["credit"])
+                    print("  ")
+                    increase_credit = (G.node[cur_node_name]["credit"] * aboves[neigher_name] * 1.0) / cur_level[cur_node_name]
                     G.edge[neigher_name][cur_node_name]["credit"] += increase_credit
                     G.node[neigher_name]["credit"] += increase_credit
         level_index -= 1
