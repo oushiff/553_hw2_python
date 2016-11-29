@@ -4,43 +4,69 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 
-
+# key of sorting edge. using "credit" of edge as key
 def get_edge_credit(edge):
     return (edge[2]).get("credit")
 
+# Top -> Bottom: build bfs array
 def get_bfs_2d_array(G, root_name):
+    # initialize root node credit
     G.node[root_name]["credit"] = 1.0
+    # each level in bfs is one level of array
+    # each level is a dict
+    # key: node_name, value: num of shortest pathes through the node
     bfs_2d_array = [{root_name: 1}]
+    # save the nodes in above levels
     arriveds = set([root_name])
     level_index = 0
+    # loop until no node in new level
     while True:
+        # dict for new level
         new_level = {}
+        # dict for current level
         cur_level = bfs_2d_array[level_index]
         for cur_node_name in cur_level.keys():
             for next_node_name in G.neighbors(cur_node_name):
+                # filtering the nodes in the same level and upper levels
                 if next_node_name not in arriveds:
+                    # exists, add num of cur_node to new node's value
                     if next_node_name in new_level:
                         new_level[next_node_name] += cur_level[cur_node_name]
+                    # Not exists, set num of cur_node as new node's value
                     else:
                         new_level[next_node_name] = cur_level[cur_node_name]
+                        # initialize node credit
                         G.node[next_node_name]["credit"] = 1.0
+        # no node in new level, break
         if len(new_level) == 0:
             break
+        # add nodes in new level to arriveds
         arriveds |= set(new_level.keys())
+        # add new level to array
         bfs_2d_array.append(new_level)
         level_index += 1
+    # return bfs array
     return bfs_2d_array
 
+# Bottom ->Top: compute credits
 def assign_edge_credit(G, bfs_2d_array):
+    # Bottom ->Top
     level_index = len(bfs_2d_array) - 1
     while level_index > 0:
+        # dict for current level
         cur_level = bfs_2d_array[level_index]
         for cur_node_name in cur_level.keys():
+            # dict for above level
             aboves = bfs_2d_array[level_index - 1]
             for neigher_name in G.neighbors(cur_node_name):
+                # filter nodes in current level and lower level
                 if neigher_name in aboves:
+                    # increase value = (credit of cur_node) * rate
+                    # rate = (num of shortest paths through above node) / (num of shortest paths through cur node)
                     increase_credit = (G.node[cur_node_name]["credit"] * aboves[neigher_name] * 1.0) / cur_level[cur_node_name]
+                    # increase edge credit
                     G.edge[neigher_name][cur_node_name]["credit"] += increase_credit
+                    # increase node credit
                     G.node[neigher_name]["credit"] += increase_credit
         level_index -= 1
 
