@@ -59,8 +59,6 @@ def get_betweenness(G):
 
 def find_cluster(G):
     sorted_edges = sorted(G.edges_iter(data=True), key=get_edge_credit, reverse=True)
-    print(sorted_edges)
-
     nodes_num = len(G.nodes())
     edges_num = len(G.edges())
     edge_index = 0
@@ -75,11 +73,11 @@ def find_cluster(G):
             for node in part:
                 partition[node] = count
             count += 1
-        print(partition)
+        #print(partition)
         if count == nodes_num:
             break
         mod = community.modularity(partition, G)
-        print(mod)
+        #print(mod)
         if mod > max_mod:
             max_mod = mod
             partition_num = count
@@ -99,7 +97,7 @@ def get_colors_list(G, partition, partition_num):
     while index < partition_num:
         color_map[index] = (index * 1.0) / partition_num
         index += 1
-    print(color_map)
+    #print(color_map)
     return [color_map.get(partition[node], 0.25) for node in G.nodes()]
 
 def print_nodes(G):
@@ -122,7 +120,6 @@ def _main():
     inputFilename = "input.txt"
     outputImage = "image.png"
 
-
     with open(inputFilename, "r") as fp:
         lines = fp.readlines()
 
@@ -134,27 +131,21 @@ def _main():
     if len(G.edges()) == 0:
         return
 
-
     get_betweenness(G)
-
     max_mod, partition_num, max_partition = find_cluster(G.copy())
-
-    print("     ")
-    print(max_mod)
-    print(max_partition)
+    # print("     ")
+    # print(max_mod)
+    # print(max_partition)
 
     color_list = get_colors_list(G, max_partition, partition_num)
 
     pos = nx.spring_layout(G)
-
-
     nx.draw_networkx_nodes(G, pos, node_color=color_list)
     nx.draw_networkx_edges(G, pos)
     nx.draw_networkx_labels(G, pos)
     #plt.show()
+    plt.axis('off')
     plt.savefig(outputImage)
-
-
 
 
 _main()
