@@ -46,10 +46,10 @@ def assign_edge_credit(G, bfs_2d_array):
 
             for neigher_name in G.neighbors(cur_node_name):
                 if neigher_name in aboves:
-                    print("this  node:  " + cur_node_name + "  " + str(cur_level[cur_node_name]))
-                    print("above node:  " + neigher_name + "  " + str(aboves[neigher_name]))
-                    print(G.node[cur_node_name]["credit"])
-                    print("  ")
+                    # print("this  node:  " + cur_node_name + "  " + str(cur_level[cur_node_name]))
+                    # print("above node:  " + neigher_name + "  " + str(aboves[neigher_name]))
+                    # print(G.node[cur_node_name]["credit"])
+                    # print("  ")
                     increase_credit = (G.node[cur_node_name]["credit"] * aboves[neigher_name] * 1.0) / cur_level[cur_node_name]
                     G.edge[neigher_name][cur_node_name]["credit"] += increase_credit
                     G.node[neigher_name]["credit"] += increase_credit
@@ -59,8 +59,8 @@ def assign_edge_credit(G, bfs_2d_array):
 def get_bet_from_root(G, root_name):
     bfs_2d_array = get_bfs_2d_array(G, root_name)
     assign_edge_credit(G, bfs_2d_array)
-    print("root: " + root_name)
-    print_nodes(G)
+    # print("root: " + root_name)
+    # print_nodes(G)
 
 def get_betweenness(G):
     for node_name in G.nodes():
