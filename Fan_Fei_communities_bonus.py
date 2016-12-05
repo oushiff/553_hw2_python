@@ -199,6 +199,7 @@ def _main():
 
     # compute betweenness
     get_betweenness(G)
+    print_edges(G)
     # find cluster, and return the partition which can get max modularity and the num of partition
     max_mod, partition_num, max_partition = find_cluster(G)
     # output partition
